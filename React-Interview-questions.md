@@ -57,8 +57,8 @@
 ```
 - In Case of Objects Inside the state
 
-- -  Key Point to Note=> We should never mutate the state directly instead we should return a new Object.
-- -  Because React relies on state to track the changes in UI and then cause a re-render.
+    -  Key Point to Note=> We should never mutate the state directly instead we should return a new Object.
+    -  Because React relies on state to track the changes in UI and then cause a re-render.
 
 ``` javascript
 import { useState } from 'react';
@@ -209,3 +209,98 @@ export default function ProfileEditor() {
     </div>
   );
 }
+
+```
+
+### What is " e " or sometimes referred as event inside the inside the callback above?
+- " e " is just a event object that represents the information about the event that just occured it can form submit , value change (onChange) or other events which are avaibable in javascript.
+- Some methods and properties are as follows:-
+    - e.type => Represents the type of event that occured.
+    - e.target => Represents the element that triggered the event.(button,input fiels etc).
+    - e.currentTarget => Represents the element that event handler is attached to.
+    - e.preventDefault() => It prevents default browser behaviour such as form submission.
+    - e.target.value => It represents the value of the element which triggered the event.
+
+### What is UseEffect hook?
+- UseEffect is special type of hook that lets us perform side effects in a functional component and also lets us hook to the lifecycle methods of react.
+- Side Effects are anything that affects something outside the component like fetching the data, subscribing to events or timers, manuplating the dom directly, logging .local storage updates etc.
+- It takes two arguments first is a callback function and second is dependency array.
+- Callback function is the place where side effects are executed.
+- dependency array is array of items that affect the execution of the callback back (means it will execute again if the item in dependency array changes).
+- Empty dependency array means the side effect will only run once during the component insertion in DOM.
+
+- Syntax
+```javascript
+
+useEffect(()=>{... sideEffects},[item1,item2]);
+
+```
+### What is Fetch and why is it used?
+- Fetch is a built in javascript function that is used to make an Http request from the browser to a server. it's commonly used fro getting the data from the server or sending the dat to a server through an API.
+
+- fetch returns us a promise that resolves to a response ,not the actual data.
+- Response Object contains headers,status and body(in row form).
+- The body of response is a ReadableStream.We cannot use it directly in javascript that is why we need to convert it explicitly to json format or whatever format we need.
+- .json() it parses the stream to javascript object /arrays
+- when we send the data from browser to server we stringify the data , because we cannot directly send the javascript object in the http request body so we convert it into JSON format.
+
+- Syntax
+
+```javascript
+            fetch(API,{
+            method:'POST/GET/PATCH/DELETE/'
+            headers:{
+                'Content-Type':'Application/json'
+            },
+            body:JSON.stringify({
+                //data to be sent to server
+            )}
+            })
+            .then((res)=>res.json())
+            .then((data)=>console.log(data))
+
+```
+
+### How does fetch API and useEffect work together?
+
+```javascript
+import { useState, useEffect } from 'react';
+const API = 'https://jsonplaceholder.typicode.com/todos';
+export default function Todos() {
+  const [todos, setTodos] = useState([]);
+
+//This useEffect will only run once.
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(API);
+      const data = await response.json();
+      setTodos(data);
+    }
+    fetchData();
+  }, []);
+
+  return todos ? (
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>title</th>
+          <th>Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {todos.map((item) => (
+          <tr key={item.id}>
+            <td>{item.id}</td>
+            <td>{item.title}</td>
+            <td>{item.completed}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <h1>You don't have any todo </h1>
+  );
+}
+```
+
