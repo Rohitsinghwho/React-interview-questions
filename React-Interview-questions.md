@@ -1,15 +1,15 @@
 # REACT-INTERVIEW QUESTIONS
 
 ### What is the differene between class based component and functional components?
--Class based components are created using Es6 class syntax
--functional components are just plain javascript functions that returns jsx
--To manange state in class based componets we have use this.state in the component and to set the state we use the.setState() method.
--The class based component must extend React.Component class and it must implement the render method of that class.
--Functional component does not have any render method and to manage state in functional component we use useState hook.
+- Class based components are created using Es6 class syntax
+- functional components are just plain javascript functions that returns jsx
+- To manange state in class based componets we have use this.state in the component and to set the state we use the.setState() method.
+- The class based component must extend React.Component class and it must implement the render method of that class.
+- Functional component does not have any render method and to manage state in functional component we use useState hook.
 
 
 ### What is component?
--Component is a resuable piece of ui which can be used at multiple parts of ui and is independent of other of ui.
+- Component is a resuable piece of ui which can be used at multiple parts of ui and is independent of other of ui.
 
 
 ### What is hook?
@@ -36,7 +36,7 @@
 - State is an object which repersents the daynamic data about a component. Think of state as current situation of the component and how will be rendered.
 
 
-###what is useState hook?
+### what is useState hook?
 - 
 
 
