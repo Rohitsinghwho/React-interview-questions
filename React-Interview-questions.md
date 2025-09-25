@@ -52,5 +52,160 @@
  const handleClick = () => {
     setOn((prev) => !prev);
   };
-// The prev inside the callback is the current state of the variable inside the component.
+// The prev inside the callback is the reference to the current state of the variable inside the component.
 
+```
+- In Case of Objects Inside the state
+
+- Key Point to Note=> We should never mutate the state directly instead we should return a new Object.
+- Because React relies on state to track the changes in UI and then cause a re-render.
+
+``` javascript
+import { useState } from 'react';
+export default function ProfileEditor() {
+  const [ProfileDetail, setProfileDetail] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
+  const handleFNameChange = (e) => {
+    // if we do something like this
+    // setProfileDetail((prev) => {
+    //   prev.firstName= e.target.value  //We are mutating the directly which we should avoid
+    // });
+
+    setProfileDetail((prev) => ({
+      ...prev, //copy the existing object
+      firstName: e.target.value, //update only firstName
+    }));
+  };
+  const handleFormSubmission = (e) => {
+    e.preventDefault();
+    if (
+      ProfileDetail.firstName &&
+      ProfileDetail.lastName &&
+      ProfileDetail.email
+    ) {
+      alert(
+        `Hey ${ProfileDetail.firstName + ProfileDetail.lastName}, How you doin!`
+      );
+      return;
+    } else alert(`Please Fill All the details Champ!`);
+  };
+
+  return (
+    <form onSubmit={handleFormSubmission}>
+      <input
+        type="text"
+        placeholder="FirstName"
+        value={ProfileDetail.firstName}
+        onChange={handleFNameChange}
+      />
+      <input
+        type="text"
+        placeholder="LastName"
+        value={ProfileDetail.lastName}
+        onChange={(e) =>
+          setProfileDetail((prev) => ({ ...prev, lastName: e.target.value }))
+        }
+      />
+      <input
+        type="email"
+        placeholder="example@gmail.com"
+        value={ProfileDetail.email}
+        onChange={(e) =>
+          setProfileDetail((p) => ({ ...p, email: e.target.value }))
+        }
+      />
+      <button>Submit</button>
+    </form>
+  );
+}
+```
+- In Case of Array Updates
+
+```javascript
+import { useState } from 'react';
+export default function ProfileEditor() {
+  const [ProfileAttributes, setProfileAttributes] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
+  const [Profiles, setProfiles] = useState([
+    { id: 1, name: 'Rohit Singh', email: 'devbyrohit@gmail.com' },
+    { id: 2, name: 'John', email: 'johnbhai@gmail.com' },
+  ]);
+  const handleFormSubmission = (e) => {
+    e.preventDefault();
+    //Create a object that you want to insert in the array
+    const newObj = {
+      id: 3,
+      name: ProfileAttributes.firstName + ' ' + ProfileAttributes.lastName,
+      email: ProfileAttributes.email,
+    };
+    if (
+      ProfileAttributes.firstName &&
+      ProfileAttributes.lastName &&
+      ProfileAttributes.email
+    ) {
+        // and do it like this
+        //copy the previous elements and then add the new object
+      setProfiles((prev) => [...prev, newObj]);
+      return;
+    } else alert(`Please Fill All the details Champ!`);
+  };
+
+  return (
+    <div>
+      <div>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Profiles.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>{item.email}</td>
+              </tr>
+            ))}
+            <tr></tr>
+          </tbody>
+        </table>
+      </div>
+      <form onSubmit={handleFormSubmission}>
+        <input
+          type="text"
+          placeholder="FirstName"
+          value={ProfileAttributes.firstName}
+          onChange={(e) =>
+            setProfileAttributes((p) => ({ ...p, firstName: e.target.value }))
+          }
+        />
+        <input
+          type="text"
+          placeholder="LastName"
+          value={ProfileAttributes.lastName}
+          onChange={(e) =>
+            setProfileAttributes((prev) => ({ ...prev, lastName: e.target.value }))
+          }
+        />
+        <input
+          type="email"
+          placeholder="example@gmail.com"
+          value={ProfileAttributes.email}
+          onChange={(e) =>
+            setProfileAttributes((p) => ({ ...p, email: e.target.value }))
+          }
+        />
+        <button>Submit</button>
+      </form>
+    </div>
+  );
+}
