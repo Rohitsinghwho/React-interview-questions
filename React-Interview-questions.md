@@ -52,5 +52,5 @@
  const handleClick = () => {
     setOn((prev) => !prev);
   };
-
+// The prev inside the callback is the current state of the variable inside the component.
 
