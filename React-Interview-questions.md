@@ -57,8 +57,8 @@
 ```
 - In Case of Objects Inside the state
 
-- Key Point to Note=> We should never mutate the state directly instead we should return a new Object.
-- Because React relies on state to track the changes in UI and then cause a re-render.
+- -  Key Point to Note=> We should never mutate the state directly instead we should return a new Object.
+- -  Because React relies on state to track the changes in UI and then cause a re-render.
 
 ``` javascript
 import { useState } from 'react';
