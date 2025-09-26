@@ -310,6 +310,8 @@ export default function Todos() {
 - Everytime the user interrupt the timer the previous timer is cleared and a new timer is created for same delay passed as argument.
 - Example is Delaying the API Call for Seaching when doing search on a website.
 
+- Check out the below image for debouncing
+
 [Debouncing](https://miro.medium.com/v2/resize:fit:1400/1*sRRuxhp8rJK5fKDINFEL1Q.png)
 
 #### Search Using Debounce
@@ -407,3 +409,125 @@ export default function Search() {
 }
 
 ```
+
+
+### What is useMemo hook?
+- useMemo hook lets us cache the result of a calculation during re-renders.
+- useMemo hook only cache the last result of calculation not all the results of a calculation.
+- useMemo hook is also used for skipping the re-renders of a component.
+- useMemo hook is also used for caching the dependency of other hook.
+- Do not use useMemo for all the task use it if we have expensive function calls or heavy math to do.
+
+- Syntax
+  - let value=useMemo(()=>calculationFunc,[])
+  - returns a value of the executed function and executes the function only if dependency changes.
+
+#### Things that cause re-render
+- A React component re-renders whenever React thinks its output (UI) might change due to:
+  - State update
+  - Prop update
+  - Context update
+  - Parent re-render
+
+#####  function's value memoization.
+
+- Before useMemo
+
+```javascript
+import { useState, useMemo, useEffect } from 'react';
+
+export default function () {
+  const [inputValue, setInputValue] = useState('');
+  const [counter, setCounter] = useState(0);
+
+  
+  function calculate(val) {
+    console.log('executing');
+    return val * val;
+  }
+  // everytime the setCounter changes the state useState schedules a re-render so this function will be called again and this a expensive call just kidding.
+  let double = calculate(4);
+  return (
+    <div style={{ display: 'flex' }}>
+      <div>Counter: {counter}</div>
+      <button onClick={(e) => setCounter(counter + 1)}>Increment</button>
+      <div>{double}</div>
+    </div>
+  );
+}
+
+```
+- After useMemo
+
+```javascript
+import { useState, useMemo, useEffect } from 'react';
+export default function () {
+  const [inputValue, setInputValue] = useState('');
+  const [counter, setCounter] = useState(0);
+
+  // Let's mimic this as expensive function call which should be happening again and again so let's memoize it.
+  function calculate(val) {
+    console.log('executing');
+    return val * val;
+  }
+  // we use memoization here
+  // if and only if the val changes then only useMemo hook will run again.
+  //here val can be a state variable
+  let val = 4;
+  let double = useMemo(() => calculate(val), [val]);
+  return (
+    <div style={{ display: 'flex' }}>
+      <div>Counter: {counter}</div>
+      <button onClick={(e) => setCounter(counter + 1)}>Increment</button>
+      <div>{double}</div>
+    </div>
+  );
+}
+```
+
+
+### what is useCallback hook?
+- In react with every re-render the function's refernces are created again.
+- This may cause unnecssary re-render of the child component if the function is passed as a prop to them.
+- So the rescuer here is useCallback which is used to cache such functions for which we do not want to create references again and again.
+- Some might be thinking that this is what useMemo hook does too. Wrong, Cause it just caches the function's value not the entire function.
+- It return's a function not the value.
+- It caches only the function reference.
+
+#### Usage:-
+- When passing the function as prop to child component.
+- when using functions inside useEffect or other hooks.
+- Expensive function def where we do not want to re-calculate everything.
+
+- Syntax:-
+- useCallback(()=>fn,[])
+
+```javascript
+import { useState, useCallback, useEffect } from 'react';
+export default function () {
+  const [counter, setCounter] = useState(0);
+  let val = 4;
+  const double = useCallback((num) => {
+    console.log('executing');
+    return num * num;
+  }, []);
+  useEffect(() => {
+    console.log('Function reference:', double);
+  });
+  const value = double(val);
+  return (
+    <div style={{ display: 'flex' }}>
+      <div>Counter: {counter}</div>
+      <button onClick={(e) => setCounter(counter + 1)}>Increment</button>
+      <div>{value}</div>
+    </div>
+  );
+}
+
+```
+
+
+### What is lifting State up?
+- Sometimes, you want the state of two components to always change together. To do it, remove state from both of them, move it to their closest common parent, and then pass it down to them via props. This is known as lifting state up.
+
+
