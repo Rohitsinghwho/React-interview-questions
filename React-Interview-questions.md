@@ -212,7 +212,7 @@ export default function ProfileEditor() {
 
 ```
 
-### What is " e " or sometimes referred as event inside the inside the callback above?
+### What is " e " or sometimes referred as event inside the callback above?
 - " e " is just a event object that represents the information about the event that just occured it can form submit , value change (onChange) or other events which are avaibable in javascript.
 - Some methods and properties are as follows:-
     - e.type => Represents the type of event that occured.
@@ -304,3 +304,106 @@ export default function Todos() {
 }
 ```
 
+### What is Debouncing and Provide a Example of Debouncing.
+- Deboucing is a mechanism or concept through which we delay the exeution of function or task until a specified interval of time.
+- In Debouncing we use the setTimeOut web api function to delay the execution of a function.
+- Everytime the user interrupt the timer the previous timer is cleared and a new timer is created for same delay passed as argument.
+- Example is Delaying the API Call for Seaching when doing search on a website.
+
+[Debouncing](https://miro.medium.com/v2/resize:fit:1400/1*sRRuxhp8rJK5fKDINFEL1Q.png)
+
+#### Search Using Debounce
+
+```javascript
+import { useMemo, useState } from 'react';
+
+export default function Search() {
+  // our search box should give me some suggestions based on user typing....
+
+  //Backend Mock Api response
+  const suggestions = [
+    {
+      R: ['React', 'Ruby on rails', 'RollUp', 'React Dom'],
+      e: ['React', 'React Dom', 'esBuild', 'es'],
+      a: ['React', 'Reaction', 'Reactjs', 'Realtime', 'Reality'],
+      c: [
+        'React',
+        'Reaction',
+        'Reactjs',
+        'Realtime',
+        'Reality',
+        'Reacon Stark',
+      ],
+      t: ['React', 'Reactjs', 'React interview Question', 'React in realtime'],
+    },
+  ];
+  const [searchValue, setSearchValue] = useState('');
+  const [SuggestionsDropDown, setSuggestionsDropDown] = useState(null);
+
+  function getSuggestions(value) {
+    let size = value.length;
+    let char = value[size - 1];
+    for (const [key, value] of Object.entries(suggestions[0])) {
+      if (key === char) {
+        return value;
+      }
+    }
+    return [];
+  }
+
+  const Debouce = (fn, delay) => {
+    let timerId;
+    return function (...args) {
+      if (timerId) clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  };
+
+  // debounced version of getSuggestions
+  const DebouncedGetSuggestions = useMemo(() =>
+    Debouce((val) => {
+      const result = getSuggestions(val);
+      setSuggestionsDropDown(result);
+    }, 1000)
+  );
+
+  const handleInputChange = (e) => {
+    setSearchValue(e.target.value);
+    DebouncedGetSuggestions(e.target.value);
+  };
+  return (
+    <div>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '3rem',
+        }}
+      >
+        <input
+          style={{ width: '50vw', height: '2rem' }}
+          type="text"
+          placeholder="search"
+          value={searchValue}
+          onChange={handleInputChange}
+        />
+        {SuggestionsDropDown && (
+          <ul style={{ border: '1px solid grey', width: '50vw' }}>
+            {SuggestionsDropDown.map((suggestion) => (
+              <li style={{ listStyle: 'none', cursor: 'pointer' }}>
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+```
